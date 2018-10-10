@@ -2,12 +2,14 @@ package com.wps.poc.ged.simpleged.web.rest;
 
 import com.wps.poc.ged.simpleged.model.SGDocument;
 import com.wps.poc.ged.simpleged.service.SGDocumentService;
+import com.wps.poc.ged.simpleged.web.dto.Document;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,15 +25,18 @@ public class FileUploadController {
         this.sgDocumentService = sgDocumentService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<Page<SGDocument>> find(Pageable pageable) {
         return ResponseEntity.ok(sgDocumentService.find(pageable));
     }
 
-    @PostMapping("/")
-    public ResponseEntity<SGDocument> uploadFile(SGDocument sgDocument, @RequestParam("file") MultipartFile file) throws URISyntaxException, IOException {
-        SGDocument document = sgDocumentService.create(sgDocument, file);
-        return ResponseEntity.created(new URI("/documents/" + document.getId())).body(document);
+    @PostMapping
+    public ResponseEntity<SGDocument> uploadFile(Document document) throws URISyntaxException, IOException {
+        SGDocument doc = new SGDocument();
+        doc.setName(document.getName());
+        doc.setId(document.getId());
+        SGDocument sgDocument = sgDocumentService.create(doc, document.getFile());
+        return ResponseEntity.created(new URI("/documents/" + sgDocument.getId())).body(sgDocument);
     }
 
 

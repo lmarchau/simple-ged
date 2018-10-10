@@ -15,4 +15,4 @@ logging:
     com.wps.poc.ged.simpleged: DEBUG
 
 sg:
-  root-location: c:\\apps\ged\sg
+  root-location: apps/ged/sg
